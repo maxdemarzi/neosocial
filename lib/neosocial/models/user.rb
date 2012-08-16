@@ -3,7 +3,7 @@ class User
   attr_accessor :uid, :name, :image_url, :location, :token
 
   def initialize(node)
-    @neo_id     = node["self"].split('/').last
+    @neo_id     = node["self"].split('/').last.to_i
     @uid        = node["data"]["uid"]
     @name       = node["data"]["name"]
     @image_url  = node["data"]["img_url"]
@@ -88,10 +88,10 @@ class User
   end
 
   def friends_count
-    cypher = "START me = node(#{@neo_id})
+    cypher = "START me = node({neo_id})
               MATCH me -[:friends]-> friend
               RETURN COUNT(friend)"
-    results = $neo_server.execute_query(cypher)
+    results = $neo_server.execute_query(cypher, {:id => @neo_id})
 
     if results["data"][0]
       results["data"][0][0]
@@ -99,6 +99,15 @@ class User
       0
     end
 
+  end
+
+  def friend_matrix
+    cypher =  "START me = node({id})
+               MATCH me -[:friends]-> friends -[:friends]-> fof
+               WHERE fof <> me
+               RETURN friends.name, collect(fof.name)
+               ORDER BY COUNT(fof) "
+    $neo_server.execute_query(cypher, {:id => @neo_id})["data"]
   end
 
 end

@@ -17,6 +17,8 @@
               %a{:href => "/user/#{current_user.uid}/likes"}Likes
             %li
               %a{:href => "/user/#{current_user.uid}/friends"}Friends
+            %li
+              %a{:href => "/user/#{current_user.uid}/visualization"}Visualization
         %p.navbar-text.pull-right
           -unless current_user.nil?
             .btn-group.pull-right
@@ -31,6 +33,8 @@
                   %a{:href => "/user/#{current_user.uid}/likes"}Likes
                 %li
                   %a{:href => "/user/#{current_user.uid}/friends"}Friends
+                %li
+                  %a{:href => "/user/#{current_user.uid}/visualization"}Visualization
                 %li.divider
                 %li
                   %a{:href => "/logout" } Logout

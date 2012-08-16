@@ -1,16 +1,16 @@
-neosocial
+NeoSocial
 =========
 
-Example application to connect to one of the social networks
+Example application to connect Neo4j to Facebook using the Neography Gem.
 
 
 Pre-Requisites
 --------------
 
-You will need to get a Facebook Consumer Key and Secret on https://developers.facebook.com/apps
-Select the "user_likes", "user_location", "friend_likes", "friend_location" permissions.
-You will need Neo4j in order for your database.
-You will need Redis in order to use Sidekiq for background jobs.
+* You will need to get a Facebook Consumer Key and Secret on https://developers.facebook.com/apps
+* Select the "user_likes", "user_location", "friend_likes", "friend_location" permissions.
+* You will need Neo4j in order for your database.
+* You will need Redis in order to use Sidekiq for background jobs.
 
 Installation
 ----------------

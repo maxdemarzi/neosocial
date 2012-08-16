@@ -60,6 +60,16 @@ class App < Sinatra::Base
     haml :'thing/index'
   end
 
+  get '/user/:id/visualization' do
+    @user = user(params[:id])
+    haml :'user/visualization'
+  end
+
+  get '/visualization' do
+    @user = current_user
+    @user.friend_matrix.map{|fm| {"name" => fm[0], "follows" => fm[1]} }.to_json
+  end
+
   # Things
   get '/thing/:id' do
     @thing = Thing.get_by_id(params[:id])

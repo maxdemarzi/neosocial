@@ -25,3 +25,6 @@ footer li {
     display: inline-block;
 }
 
+path.chord {
+    fill-opacity: .67;
+}

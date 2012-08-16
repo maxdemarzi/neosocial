@@ -3,7 +3,7 @@ class Thing
   attr_accessor :uid, :name
 
   def initialize(node)
-    @neo_id     = node["self"].split('/').last
+    @neo_id     = node["self"].split('/').last.to_i
     @uid        = node["data"]["uid"]
     @name       = node["data"]["name"]
   end
