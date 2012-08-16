@@ -37,18 +37,18 @@ class Thing
   end
 
   def users
-    cypher = "START me = node(#{@neo_id})
+    cypher = "START me = node({id})
               MATCH me <-[:likes]- users
               RETURN users.uid, users.name, users.image_url"
-    results = $neo_server.execute_query(cypher)
+    results = $neo_server.execute_query(cypher, {:id => @neo_id})
     results["data"]
   end
 
   def users_count
-    cypher = "START me = node(#{@neo_id})
+    cypher = "START me = node({id})
               MATCH me <-[:likes]-> users
               RETURN COUNT(users)"
-    results = $neo_server.execute_query(cypher)
+    results = $neo_server.execute_query(cypher, {:id => @neo_id})
     results["data"][0][0]
   end
 

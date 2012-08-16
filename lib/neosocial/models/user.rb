@@ -58,18 +58,18 @@ class User
   end
 
   def likes
-    cypher = "START me = node(#{@neo_id})
+    cypher = "START me = node({id})
               MATCH me -[:likes]-> like
               RETURN ID(like), like.name"
-    results = $neo_server.execute_query(cypher)
+    results = $neo_server.execute_query(cypher, {:id => @neo_id})
     Array(results["data"])
   end
 
   def likes_count
-    cypher = "START me = node(#{@neo_id})
+    cypher = "START me = node({id})
               MATCH me -[:likes]-> like
               RETURN COUNT(like)"
-    results = $neo_server.execute_query(cypher)
+    results = $neo_server.execute_query(cypher, {:id => @neo_id})
 
     if results["data"][0]
       results["data"][0][0]
@@ -79,16 +79,16 @@ class User
   end
 
   def friends
-    cypher = "START me = node(#{@neo_id})
+    cypher = "START me = node({id})
               MATCH me -[:friends]-> friend
               RETURN friend.uid, friend.name, friend.image_url"
-    results = $neo_server.execute_query(cypher)
+    results = $neo_server.execute_query(cypher, {:id => @neo_id})
 
     Array(results["data"])
   end
 
   def friends_count
-    cypher = "START me = node({neo_id})
+    cypher = "START me = node({id})
               MATCH me -[:friends]-> friend
               RETURN COUNT(friend)"
     results = $neo_server.execute_query(cypher, {:id => @neo_id})
