@@ -12,25 +12,25 @@
             %a{:href => '/'}Home
           -unless current_user.nil?
             %li
-              %a{:href => "/user/#{current_user["data"]["uid"]}" } Profile
+              %a{:href => "/user/#{current_user.uid}" } Profile
             %li
-              %a{:href => "/user/#{current_user["data"]["uid"]}/likes"}Likes
+              %a{:href => "/user/#{current_user.uid}/likes"}Likes
             %li
-              %a{:href => "/user/#{current_user["data"]["uid"]}/friends"}Friends
+              %a{:href => "/user/#{current_user.uid}/friends"}Friends
         %p.navbar-text.pull-right
           -unless current_user.nil?
             .btn-group.pull-right
               %a.btn.dropdown-toggle{:'data-togle' => "dropdown", :href => "#"}
                 %i.icon-user
-                ="#{current_user["data"]["name"]}"
+                ="#{current_user.name}"
                 %span.caret
               %ul.dropdown-menu
                 %li
-                  %a{:href => "/user/#{current_user["data"]["uid"]}" } Profile
+                  %a{:href => "/user/#{current_user.uid}" } Profile
                 %li
-                  %a{:href => "/user/#{current_user["data"]["uid"]}/likes"}Likes
+                  %a{:href => "/user/#{current_user.uid}/likes"}Likes
                 %li
-                  %a{:href => "/user/#{current_user["data"]["uid"]}/friends"}Friends
+                  %a{:href => "/user/#{current_user.uid}/friends"}Friends
                 %li.divider
                 %li
                   %a{:href => "/logout" } Logout

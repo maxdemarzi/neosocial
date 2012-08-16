@@ -3,14 +3,12 @@ module Job
     include Sidekiq::Worker
 
     def perform(uid, person_id)
-      @neo = Neography::Rest.new
       user = User.find_by_uid(uid)
-      client = User.client(user)
-      person = client.get_object(person_id)
+      person = user.client.get_object(person_id)
       friend = User.create_from_facebook(person)
 
       # Import mutual friends
-      mutual_friends = client.get_connections("me", "mutualfriends/#{person_id}")
+      mutual_friends = user.client.get_connections("me", "mutualfriends/#{person_id}")
 
       commands = []
 
@@ -24,12 +22,12 @@ module Job
           node = User.create_from_facebook(person)
         end
 
-        commands << [:create_unique_relationship, "friends_index", "ids",  "#{uid}-#{person_id}", "friends", node, friend]
-        commands << [:create_unique_relationship, "friends_index", "ids",  "#{person_id}-#{uid}", "friends", friend, node]
+        commands << [:create_unique_relationship, "friends_index", "ids",  "#{uid}-#{person_id}", "friends", node.neo_id, friend.neo_id]
+        commands << [:create_unique_relationship, "friends_index", "ids",  "#{person_id}-#{uid}", "friends", friend.neo_id, node.neo_id]
 
       end
 
-      batch_result = @neo.batch *commands
+      batch_result = $neo_server.batch *commands
     end
 
   end

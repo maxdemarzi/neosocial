@@ -1,11 +1,11 @@
 .container
   .content
     .row
-      %h2="Users for #{@like["data"]["name"]}"
+      %h2="Users for #{@thing.name}"
     .row
       %table{:class => "table table-striped"}
         %tbody
-          - @like_users.each do |user|
+          - @users.each do |user|
             %tr
               %td
                 %a{:href => "/user/#{user[0]}"}

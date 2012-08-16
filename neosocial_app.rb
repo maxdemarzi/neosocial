@@ -16,7 +16,7 @@ class App < Sinatra::Base
     if current_user.nil?
       haml :index, :layout => :layout
     else
-      redirect to("/user/#{current_user["data"]["uid"]}")
+      redirect to("/user/#{current_user.uid}")
     end
   end
 
@@ -24,7 +24,7 @@ class App < Sinatra::Base
   ['get', 'post'].each do |method|
     send(method, "/auth/:provider/callback") do
       user = User.create_with_omniauth(env['omniauth.auth'])
-      session[:uid] = user["data"]["uid"]
+      session[:uid] = user.uid
 
       redirect to(session[:redirect_url] || "/user/#{session[:uid]}")
       session[:redirect_url] = nil
@@ -43,28 +43,28 @@ class App < Sinatra::Base
   # Users
   get '/user/:id' do
     @user = user(params[:id])
-    @friends_count = User.friends_count(@user)
-    @likes_count = User.likes_count(@user)
+    @friends_count = @user.friends_count
+    @likes_count = @user.likes_count
     haml :'user/show'
   end
 
   get '/user/:id/friends' do
     @user = user(params[:id])
-    @friends = User.friends(@user)
+    @friends = @user.friends
     haml :'user/index'
   end
 
   get '/user/:id/likes' do
     @user = user(params[:id])
-    @likes = User.likes(@user)
-    haml :'like/index'
+    @things = @user.likes
+    haml :'thing/index'
   end
 
-  # Likes
-  get '/like/:id' do
-    @like = Like.get_by_id(params[:id])
-    @like_users = Like.users(@like)
-    haml :'like/show'
+  # Things
+  get '/thing/:id' do
+    @thing = Thing.get_by_id(params[:id])
+    @users = @thing.users
+    haml :'thing/show'
   end
 
 end

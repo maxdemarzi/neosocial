@@ -1,22 +1,25 @@
-class Like < Neography::Node
+class Thing
+  attr_reader :neo_id
+  attr_accessor :uid, :name
+
+  def initialize(node)
+    @neo_id     = node["self"].split('/').last
+    @uid        = node["data"]["uid"]
+    @name       = node["data"]["name"]
+  end
 
   def self.get_by_id(id)
-    results = $neo_server.get_node(id)
-    results
+    Thing.new($neo_server.get_node(id))
   end
 
   def self.find_by_uid(uid)
-    like = $neo_server.get_node_index("likes_index", "uid", uid)
+    thing = $neo_server.get_node_index("thing_index", "uid", uid)
 
-    if like
-      like.first
+    if thing
+      Thing.new(thing.first)
     else
       nil
     end
-  end
-
-  def self.neo_id(node)
-    node["self"].split('/').last
   end
 
   def self.available
@@ -33,16 +36,16 @@ class Like < Neography::Node
     end
   end
 
-  def self.users(node)
-    cypher = "START me = node(#{Like.neo_id(node)})
+  def users
+    cypher = "START me = node(#{@neo_id})
               MATCH me <-[:likes]- users
               RETURN users.uid, users.name, users.image_url"
     results = $neo_server.execute_query(cypher)
     results["data"]
   end
 
-  def self.users_count(node)
-    cypher = "START me = node(#{Like.neo_id(node)})
+  def users_count
+    cypher = "START me = node(#{@neo_id})
               MATCH me <-[:likes]-> users
               RETURN COUNT(users)"
     results = $neo_server.execute_query(cypher)

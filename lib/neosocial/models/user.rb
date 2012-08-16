@@ -1,10 +1,21 @@
 class User
+  attr_reader :neo_id
+  attr_accessor :uid, :name, :image_url, :location, :token
+
+  def initialize(node)
+    @neo_id     = node["self"].split('/').last
+    @uid        = node["data"]["uid"]
+    @name       = node["data"]["name"]
+    @image_url  = node["data"]["img_url"]
+    @location   = node["data"]["location"]
+    @token      = node["data"]["token"]
+  end
 
   def self.find_by_uid(uid)
     user = $neo_server.get_node_index("user_index", "uid", uid)
 
     if user
-      user.first
+      User.new(user.first)
     else
       nil
     end
@@ -19,13 +30,13 @@ class User
     node = $neo_server.create_unique_node("user_index", "uid", auth.uid, values)
 
     Sidekiq::Client.enqueue(Job::ImportFacebookProfile, auth.uid)
-    node
+    User.new(node)
   end
 
   def self.create_from_facebook(friend)
     id        = friend["id"]
     name      = friend["name"]
-    location  = friend["location"] ? friend["location"]["name"] : ""
+    location  = friend["location"] ? (friend["location"]["name"] || "") : ""
     image_url = "https://graph.facebook.com/#{friend["id"]}/picture"
 
     node = $neo_server.create_unique_node("user_index", "uid", id,
@@ -34,32 +45,28 @@ class User
                                            "image_url" => image_url,
                                            "uid"       => id
                                           })
-    node
+    User.new(node)
   end
 
-  def self.neo_id(node)
-    node["self"].split('/').last
+  def client
+    @client ||= Koala::Facebook::API.new(self.token)
   end
 
-  def self.client(node)
-    @client ||= Koala::Facebook::API.new(node["data"]["token"])
-  end
-
-  def self.add_like(node, like_id)
+  def add_like(like_id)
     like = Like.get_by_id(like_id)
-    $neo_server.create_unique_relationship("has_index", "user_value",  "#{node["data"]["uid"]}-#{like["data"]["name"]}", "has", User.neo_id(node), Like.neo_id(like))
+    $neo_server.create_unique_relationship("has_index", "user_value",  "#{@uid}-#{like["data"]["name"]}", "has", @neo_id, Like.neo_id(like))
   end
 
-  def self.likes(node)
-    cypher = "START me = node(#{User.neo_id(node)})
+  def likes
+    cypher = "START me = node(#{@neo_id})
               MATCH me -[:likes]-> like
               RETURN ID(like), like.name"
     results = $neo_server.execute_query(cypher)
     Array(results["data"])
   end
 
-  def self.likes_count(node)
-    cypher = "START me = node(#{User.neo_id(node)})
+  def likes_count
+    cypher = "START me = node(#{@neo_id})
               MATCH me -[:likes]-> like
               RETURN COUNT(like)"
     results = $neo_server.execute_query(cypher)
@@ -71,8 +78,8 @@ class User
     end
   end
 
-  def self.friends(node)
-    cypher = "START me = node(#{User.neo_id(node)})
+  def friends
+    cypher = "START me = node(#{@neo_id})
               MATCH me -[:friends]-> friend
               RETURN friend.uid, friend.name, friend.image_url"
     results = $neo_server.execute_query(cypher)
@@ -80,8 +87,8 @@ class User
     Array(results["data"])
   end
 
-  def self.friends_count(node)
-    cypher = "START me = node(#{User.neo_id(node)})
+  def friends_count
+    cypher = "START me = node(#{@neo_id})
               MATCH me -[:friends]-> friend
               RETURN COUNT(friend)"
     results = $neo_server.execute_query(cypher)

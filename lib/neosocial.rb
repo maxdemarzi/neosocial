@@ -16,7 +16,7 @@ Koala.http_service.http_options = {
 $neo_server = Neography::Rest.new
 
 require 'neosocial/models/user'
-require 'neosocial/models/like'
+require 'neosocial/models/thing'
 
 require 'neosocial/jobs/import_facebook_profile'
 require 'neosocial/jobs/import_friends'
