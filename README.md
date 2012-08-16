@@ -20,9 +20,9 @@ Installation
     sudo apt-get install redis-server or brew install redis
     rake neo4j:install['enterprise','1.8.M07']
     rake neo4j:start
-    export SESSION_SECRET="82e042cd6fde2bf1764f777236db799e"
-    export FACEBOOK_APP_ID="177440605714349"
-    export FACEBOOK_SECRET="7a557481c285b2b7ac5792afbfc03c6d"
+    export SESSION_SECRET=<your session secret>
+    export FACEBOOK_APP_ID=<your facebook app id>
+    export FACEBOOK_SECRET=<your facebook secret>
     export REDISTOGO_URL="redis://127.0.0.1:6379/"
     foreman start
 
@@ -31,12 +31,12 @@ On Heroku
 
     git clone git@github.com:maxdemarzi/neosocial.git
     heroku apps:create neosocial
-    heroku config:add SESSION_SECRET="82e042cd6fde2bf1764f777236db799e"
-    heroku config:add FACEBOOK_APP_ID="177440605714349"
-    heroku config:add FACEBOOK_SECRET="7a557481c285b2b7ac5792afbfc03c6d"
+    heroku config:add SESSION_SECRET=<your session secret>
+    heroku config:add FACEBOOK_APP_ID=<your facebook app id>
+    heroku config:add FACEBOOK_SECRET=<your facebook secret>
     heroku addons:add neo4j
     heroku addons:add redistogo
     git push heroku master
-    heroku ps:scale workers=1
+    heroku ps:scale worker=1
 
 See it running live at http://neosocial.heroku.com
