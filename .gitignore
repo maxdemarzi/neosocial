@@ -1,2 +1,5 @@
+.DS_Store
 .idea
 *.iml
+neo4j
+redis
