@@ -1,9 +1,10 @@
 # -*- encoding: utf-8 -*-
+$:.unshift File.dirname(__FILE__)
 
 ENV['RACK_ENV'] ||= 'development'
 
-require './lib/neosocial'
-require './neosocial_app'
+require 'lib/neosocial'
+require 'neosocial_app'
 require 'sidekiq/web'
 
 map '/' do
