@@ -67,7 +67,9 @@ class App < Sinatra::Base
 
   get '/visualization' do
     @user = current_user
-    @user.friend_matrix.map{|fm| {"name" => fm[0], "follows" => fm[1]} }.to_json
+    random_number = 20 + Random.rand(31)
+    @user.friend_matrix.sample(random_number).map{|fm| {"name" => fm[0], "follows" => fm[1]} }.to_json
+
   end
 
   # Things
