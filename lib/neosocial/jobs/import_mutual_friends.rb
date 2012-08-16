@@ -18,7 +18,7 @@ module Job
 
         node = User.find_by_uid(uid)
         unless node
-          person = client.get_object(uid)
+          person = user.client.get_object(uid)
           node = User.create_from_facebook(person)
         end
 
