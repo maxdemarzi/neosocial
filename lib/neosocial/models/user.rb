@@ -23,8 +23,8 @@ class User
 
   def self.create_with_omniauth(auth)
     values = {"name"      => auth.info.name,
-              "image_url" => auth.info.image,
-              "location"  => auth.info.location,
+              "image_url" => auth.info.image || '/images/icon_no_photo_80x80.png',
+              "location"  => auth.info.location || '',
               "uid"       => auth.uid,
               "token"     => auth.credentials.token}
     node = $neo_server.create_unique_node("user_index", "uid", auth.uid, values)
