@@ -27,7 +27,10 @@ class User
               "location"  => auth.info.location || '',
               "uid"       => auth.uid,
               "token"     => auth.credentials.token}
-    node = $neo_server.create_unique_node("user_index", "uid", auth.uid, values)
+    node = $neo_server.create_unique_node("user_index", "uid", auth.uid)
+    neo_id = node["self"].split('/').last.to_i
+    $neo_server.set_node_properties(neo_id, values)
+    node = $neo_server.get_node(neo_id)
 
     Sidekiq::Client.enqueue(Job::ImportFacebookProfile, auth.uid)
     User.new(node)
