@@ -19,7 +19,7 @@ module Job
           # Import friend likes
           likes = user.client.get_connections(person_id, "likes")
 
-          if likes and false
+          if likes
             # Import things
             commands = []
             likes.each do |thing|
