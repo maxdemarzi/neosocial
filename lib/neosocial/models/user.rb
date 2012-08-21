@@ -57,7 +57,9 @@ class User
 
   def add_like(like_id)
     like = Like.get_by_id(like_id)
-    $neo_server.create_unique_relationship("has_index", "user_value",  "#{@uid}-#{like["data"]["name"]}", "has", @neo_id, Like.neo_id(like))
+    if like
+      $neo_server.create_unique_relationship("has_index", "user_value",  "#{@uid}-#{like["data"]["name"]}", "has", @neo_id, Like.neo_id(like))
+    end
   end
 
   def likes
