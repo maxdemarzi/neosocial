@@ -1,6 +1,7 @@
 module Job
   class ImportFacebookProfile
     include Sidekiq::Worker
+    sidekiq_options :retry => false
 
     def perform(uid)
       user = User.find_by_uid(uid)

@@ -1,6 +1,7 @@
 module Job
   class ImportMutualFriends
     include Sidekiq::Worker
+    sidekiq_options :retry => false
 
     def perform(uid, person_id)
       user = User.find_by_uid(uid)
