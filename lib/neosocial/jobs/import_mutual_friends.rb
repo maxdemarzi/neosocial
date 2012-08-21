@@ -6,8 +6,7 @@ module Job
     def perform(uid, person_id)
       user = User.find_by_uid(uid)
       if user
-        person = user.client.get_object(person_id)
-        friend = User.create_from_facebook(person)
+        friend = User.find_by_uid(person_id)
 
         # Import mutual friends
         mutual_friends = user.client.get_connections("me", "mutualfriends/#{person_id}")
